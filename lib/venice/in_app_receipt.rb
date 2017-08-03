@@ -53,7 +53,11 @@ module Venice
 
       # expires_date is in ms since the Epoch, Time.at expects seconds
       @expires_at = Time.at(attributes['expires_date_ms'].to_i / 1000) if attributes['expires_date_ms']
-      @expires_at = Time.at(attributes['expires_date'].to_i / 1000) if attributes['expires_date']
+      if attributes['expires_date']
+        @expires_at ||= (attributes['expires_date'] =~ /\A\d+\z/) ? Time.at(attributes['expires_date'].to_i / 1000) : DateTime.parse(attributes['expires_date']).to_time
+      end
+        
+        
 
       # cancellation_date is in ms since the Epoch, Time.at expects seconds
       @cancellation_at = Time.at(attributes['cancellation_date'].to_i / 1000) if attributes['cancellation_date']
